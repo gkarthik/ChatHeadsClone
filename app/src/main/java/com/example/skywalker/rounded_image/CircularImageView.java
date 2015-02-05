@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.widget.ImageView;
 
 /**
@@ -34,5 +35,11 @@ import android.widget.ImageView;
             canvas.clipPath(clipPath);
             canvas.drawColor(Color.BLACK);
             super.onDraw(canvas);
+        }
+
+        @Override
+        public boolean onDragEvent(DragEvent event) {
+            
+            return true;
         }
     }

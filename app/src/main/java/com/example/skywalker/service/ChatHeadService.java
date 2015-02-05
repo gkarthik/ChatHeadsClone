@@ -39,7 +39,7 @@ public class ChatHeadService extends Service {
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.TOP | Gravity.LEFT;
+        params.gravity = Gravity.BOTTOM | Gravity.LEFT;
         params.x = 0;
         params.y = 100;
 
