@@ -4,9 +4,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.DragEvent;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 /**
@@ -26,7 +32,7 @@ import android.widget.ImageView;
             super(context, attrs, defStyle);
         }
 
-        @Override
+    @Override
         protected void onDraw(Canvas canvas) {
             float radius = 90.0f;
             Path clipPath = new Path();
@@ -34,12 +40,7 @@ import android.widget.ImageView;
             clipPath.addRoundRect(rect, radius, radius, Path.Direction.CW);
             canvas.clipPath(clipPath);
             canvas.drawColor(Color.BLACK);
+            this.setClickable(true);
             super.onDraw(canvas);
         }
-
-        @Override
-        public boolean onDragEvent(DragEvent event) {
-            
-            return true;
-        }
-    }
+}

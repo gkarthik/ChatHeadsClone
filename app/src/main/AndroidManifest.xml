@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.skywalker.helloworld" >
+    package="com.example.skywalker.ChatHeadsClone" >
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <application
         android:allowBackup="true"
@@ -10,7 +10,7 @@
         <service android:name="com.example.skywalker.service.ChatHeadService">
         </service>
         <activity
-            android:name=".ChatHeadsClone"
+            android:name="com.example.skywalker.ChatHeadsClone.ChatHeadsClone"
             android:label="ChatHeadsClone" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
