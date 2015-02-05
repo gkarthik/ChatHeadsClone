@@ -40,7 +40,6 @@ import android.widget.ImageView;
             clipPath.addRoundRect(rect, radius, radius, Path.Direction.CW);
             canvas.clipPath(clipPath);
             canvas.drawColor(Color.BLACK);
-            this.setClickable(true);
             super.onDraw(canvas);
         }
 }

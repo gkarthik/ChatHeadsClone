@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import com.example.skywalker.ChatHeadsClone.R;
 import com.example.skywalker.rounded_image.CircularImageView;
@@ -21,7 +22,7 @@ import com.example.skywalker.rounded_image.CircularImageView;
 public class ChatHeadService extends Service {
 
     private WindowManager windowManager;
-    private CircularImageView chatHead;
+    private RelativeLayout chatHeadLayout;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -33,7 +34,8 @@ public class ChatHeadService extends Service {
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        chatHead = new CircularImageView(this);
+        chatHeadLayout = new RelativeLayout(this);
+        CircularImageView chatHead = new CircularImageView(this);
         chatHead.setImageResource(R.drawable.ic_launcher);
 
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -47,21 +49,26 @@ public class ChatHeadService extends Service {
         params.x = 20;
         params.y = 100;
 
-        chatHead.setOnLongClickListener(new View.OnLongClickListener(){
+        chatHead.setClickable(true);
+        chatHead.setFocusable(false);
+        chatHead.setFocusableInTouchMode(false);
+
+        chatHead.setOnClickListener(new View.OnClickListener(){
 
             @Override
-            public boolean onLongClick(View v) {
-               System.out.println("Long Click!");
-                return true;
+            public void onClick(View v) {
+               System.out.println("Click!");
             }
         });
 
-        windowManager.addView(chatHead, params);
+        chatHeadLayout.addView(chatHead, params);
+        windowManager.addView(chatHeadLayout, params);
+        chatHead.performClick();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (chatHead != null) windowManager.removeView(chatHead);
+        if (chatHeadLayout != null) windowManager.removeView(chatHeadLayout);
     }
 }
