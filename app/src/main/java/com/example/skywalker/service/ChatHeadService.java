@@ -56,10 +56,11 @@ public class ChatHeadService extends Service {
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PRIORITY_PHONE,
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
+                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
                 PixelFormat.TRANSLUCENT);
 
+        //final WindowManager.LayoutParams params = new WindowManager.LayoutParams(100, 100, 2007, 8, -3);
         params.gravity = Gravity.BOTTOM | Gravity.LEFT;
         params.x = 20;
         params.y = 100;
