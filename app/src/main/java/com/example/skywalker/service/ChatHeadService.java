@@ -53,18 +53,46 @@ public class ChatHeadService extends Service {
             }
         });
 
-        chatHeadLayout.addView(chatHead);
-        chatHeadLayout.setBackgroundColor(Color.BLUE);
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                WindowManager.LayoutParams.TYPE_PRIORITY_PHONE,
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
                 PixelFormat.TRANSLUCENT);
 
         params.gravity = Gravity.BOTTOM | Gravity.LEFT;
         params.x = 20;
         params.y = 100;
+
+        chatHeadLayout.setOnTouchListener(new View.OnTouchListener() {
+            private int initialX;
+            private int initialY;
+            private float initialTouchX;
+            private float initialTouchY;
+
+            @Override public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        initialX = params.x;
+                        initialY = params.y;
+                        initialTouchX = event.getRawX();
+                        initialTouchY = event.getRawY();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
+                        params.y = initialY - (int) (event.getRawY() - initialTouchY);
+                        Log.d("Y value",String.valueOf(params.y));
+                        windowManager.updateViewLayout(v, params);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        chatHeadLayout.addView(chatHead);
+        chatHeadLayout.setBackgroundColor(Color.BLUE);
         windowManager.addView(chatHeadLayout, params);
     }
 
