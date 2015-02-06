@@ -11,6 +11,7 @@ import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -37,21 +38,26 @@ public class ChatHeadService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         chatHeadLayout = new RelativeLayout(this);
-        chatHeadLayout.setId(0);
+
+        final CircularImageView dropView = new CircularImageView(this);
+        dropView.setImageResource(R.drawable.ic_action_cancel);
+        dropView.setVisibility(View.INVISIBLE);
+        WindowManager.LayoutParams p = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
+                PixelFormat.TRANSLUCENT);
+
+        //final WindowManager.LayoutParams params = new WindowManager.LayoutParams(100, 100, 2007, 8, -3);
+        p.gravity = Gravity.BOTTOM | Gravity.CENTER;
+        p.x = 20;
+        p.y = 100;
+
+        windowManager.addView(dropView, p);
+
         CircularImageView chatHead = new CircularImageView(this);
         chatHead.setImageResource(R.drawable.ic_launcher);
-
-//        chatHead.setClickable(true);
-//        chatHead.setFocusable(false);
-//        chatHead.setFocusableInTouchMode(false);
-
-        chatHeadLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setBackgroundColor(Color.RED);
-                Log.d("CLick", "Yes");
-            }
-        });
 
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -80,11 +86,13 @@ public class ChatHeadService extends Service {
                         initialTouchY = event.getRawY();
                         return true;
                     case MotionEvent.ACTION_UP:
+                        dropView.setVisibility(View.INVISIBLE);
                         return true;
                     case MotionEvent.ACTION_MOVE:
+
+                        dropView.setVisibility(View.VISIBLE);
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY - (int) (event.getRawY() - initialTouchY);
-                        Log.d("Y value",String.valueOf(params.y));
                         windowManager.updateViewLayout(v, params);
                         return true;
                 }
