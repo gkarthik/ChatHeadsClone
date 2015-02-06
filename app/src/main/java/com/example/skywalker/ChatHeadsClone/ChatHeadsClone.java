@@ -8,6 +8,8 @@ import android.widget.Button;
 
 import com.example.skywalker.service.ChatHeadService;
 
+import java.sql.BatchUpdateException;
+
 public class ChatHeadsClone extends Activity {
 
     @Override
@@ -20,7 +22,7 @@ public class ChatHeadsClone extends Activity {
         Button button = (Button) view;
         button.setText("Service Started ...");
         System.out.println("Service Started");
-        startService(new Intent(this, ChatHeadService.class));
+        this.startService(new Intent(this, ChatHeadService.class));
         button.setEnabled(false);
     }
 }
