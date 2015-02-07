@@ -2,9 +2,12 @@ package com.example.skywalker.service;
 
 import android.app.Service;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.DragEvent;
@@ -17,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.skywalker.ChatHeadsClone.R;
+import com.example.skywalker.Listener.CustomLocationListener;
 import com.example.skywalker.rounded_image.CircularImageView;
 
 /**
@@ -34,6 +38,10 @@ public class ChatHeadService extends Service {
 
     @Override public void onCreate() {
         super.onCreate();
+
+        LocationManager locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        CustomLocationListener locListener = new CustomLocationListener();
+        locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, locListener);
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
@@ -53,6 +61,26 @@ public class ChatHeadService extends Service {
         p.gravity = Gravity.BOTTOM | Gravity.CENTER;
         p.x = 20;
         p.y = 100;
+
+        dropView.setOnDragListener(new View.OnDragListener(){
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                final int action = event.getAction();
+                switch(action){
+                    case DragEvent.ACTION_DROP:
+                        // Gets the item containing the dragged data
+                        View view = (View) event.getLocalState();
+                        view.setVisibility(View.INVISIBLE);
+                        View dropTarget = (View) v;
+                        dropTarget.setBackgroundColor(Color.RED);
+                        //windowManager.removeView(chatHeadLayout);
+                        return true;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
 
         windowManager.addView(dropView, p);
 
@@ -84,6 +112,9 @@ public class ChatHeadService extends Service {
                         initialY = params.y;
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
+//                        ClipData data = ClipData.newPlainText("", "");
+//                        View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+//                        v.startDrag(data, shadowBuilder, v, 0);
                         return true;
                     case MotionEvent.ACTION_UP:
                         dropView.setVisibility(View.INVISIBLE);
@@ -101,6 +132,7 @@ public class ChatHeadService extends Service {
         });
 
         chatHeadLayout.addView(chatHead);
+        locListener.setChatHead(chatHead);
         chatHeadLayout.setBackgroundColor(Color.BLUE);
         windowManager.addView(chatHeadLayout, params);
     }
