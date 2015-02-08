@@ -42,6 +42,7 @@ public class ChatHeadService extends Service {
         LocationManager locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         CustomLocationListener locListener = new CustomLocationListener();
         locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, locListener);
+        locListener.setAppContext(getApplicationContext());
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
