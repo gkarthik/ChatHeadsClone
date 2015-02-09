@@ -6,27 +6,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.skywalker.InstagramService;
 import com.example.skywalker.rounded_image.CircularImageView;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Created by skywalker on 2/7/15.
@@ -45,8 +27,6 @@ public class CustomLocationListener implements LocationListener{
     }
 
     private Context appContext;
-
-
 
     public CircularImageView getChatHead() {
         return chatHead;
