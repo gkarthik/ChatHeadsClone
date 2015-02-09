@@ -24,5 +24,6 @@ public class ChatHeadsClone extends Activity {
         System.out.println("Service Started");
         this.startService(new Intent(this, ChatHeadService.class));
         button.setEnabled(false);
+        this.finish();
     }
 }

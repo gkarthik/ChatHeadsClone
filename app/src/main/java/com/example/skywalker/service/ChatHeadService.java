@@ -36,7 +36,7 @@ public class ChatHeadService extends Service {
 
     private WindowManager windowManager;
     private RelativeLayout chatHeadLayout;
-    final double fraction = 0.3;
+    final double edge = 200;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -53,23 +53,32 @@ public class ChatHeadService extends Service {
         final int screenHeight = size.y;
 
         chatHeadLayout = new RelativeLayout(this);
+
         final CircularImageView dropView = new CircularImageView(this);
         dropView.setImageResource(R.drawable.ic_action_cancel);
         WindowManager.LayoutParams p = new WindowManager.LayoutParams(
-                (int) (screenWidth * fraction),
-                (int) (screenHeight * fraction),
+                (int) edge,
+                (int) edge,
                 WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
-                PixelFormat.TRANSLUCENT);
+                PixelFormat.TRANSPARENT);
 
         p.gravity = Gravity.CENTER | Gravity.BOTTOM;
-
         windowManager.addView(dropView, p);
+        p.y = (int) (screenHeight * edge);
+
 
         CircularImageView chatHead = new CircularImageView(this);
-        p.y = (int) (screenHeight * fraction);
-
+        chatHead.setId(R.id.chat_head);
         chatHead.setImageResource(R.drawable.ic_launcher);
+        RelativeLayout.LayoutParams chatHeadParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        final TextView title = new TextView(this);
+        title.setBackgroundColor(Color.BLUE);
+        title.setTextColor(Color.WHITE);
+        RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        titleParams.addRule(RelativeLayout.BELOW, chatHead.getId());
+        titleParams.addRule(RelativeLayout.ALIGN_BOTTOM, chatHead.getId());
 
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -78,7 +87,7 @@ public class ChatHeadService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.BOTTOM | Gravity.CENTER;
+        params.gravity = Gravity.BOTTOM | Gravity.LEFT;
         params.x = 20;
         params.y = 100;
 
@@ -87,6 +96,7 @@ public class ChatHeadService extends Service {
             private int initialY;
             private float initialTouchX;
             private float initialTouchY;
+            String chathead_title;
 
             @Override public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -99,7 +109,9 @@ public class ChatHeadService extends Service {
                     case MotionEvent.ACTION_UP:
                         dropView.setVisibility(View.INVISIBLE);
                         if(checkDrop(event.getRawX(), event.getRawY(), screenHeight, screenWidth)){
-                            v.setBackgroundColor(Color.GREEN);
+                            stopService(new Intent(ChatHeadService.this, ChatHeadService.class));
+                            windowManager.removeView(v);
+                            windowManager.removeView(dropView);
                         } else {
                             v.setBackgroundColor(Color.TRANSPARENT);
                         }
@@ -109,10 +121,12 @@ public class ChatHeadService extends Service {
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY - (int) (event.getRawY() - initialTouchY);
                         windowManager.updateViewLayout(v, params);
+                        chathead_title = (String) title.getText();
                         if(checkDrop(event.getRawX(), event.getRawY(), screenHeight, screenWidth)){
-                            v.setBackgroundColor(Color.GREEN);
+                            title.setText("Close App?");
                         } else {
                             v.setBackgroundColor(Color.TRANSPARENT);
+                            title.setText(chathead_title);
                         }
                         return true;
                 }
@@ -120,13 +134,16 @@ public class ChatHeadService extends Service {
             }
         });
 
-        chatHeadLayout.addView(chatHead);
+        chatHeadLayout.addView(chatHead, chatHeadParams);
+        chatHeadLayout.addView(title, titleParams);
         windowManager.addView(chatHeadLayout, params);
+
         LocationManager locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         CustomLocationListener locListener = new CustomLocationListener();
         locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, locListener);
         locListener.setAppContext(getApplicationContext());
         locListener.setChatHead(chatHead);
+        locListener.setChathead_title(title);
     }
 
     @Override
@@ -137,7 +154,7 @@ public class ChatHeadService extends Service {
 
     public Boolean checkDrop(float x, float y, int screenHeight, int screenWidth){
         Boolean flag = false;
-        if(x > screenWidth * ((1-fraction)/2) && x < screenWidth - (screenWidth * ((1-fraction)/2)) && y > screenHeight * ((1-fraction)) ){
+        if(x > screenWidth/2 - (edge/2) && x < screenWidth/2 + (edge/2) && y > screenHeight - edge ){
             flag = true;
         }
         return flag;

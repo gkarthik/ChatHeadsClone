@@ -35,12 +35,12 @@ import android.widget.ImageView;
 
     @Override
         protected void onDraw(Canvas canvas) {
-            float radius = 90.0f;
+            float radius = this.getWidth()/2;
             Path clipPath = new Path();
             RectF rect = new RectF(0, 0, this.getWidth(), this.getHeight());
             clipPath.addRoundRect(rect, radius, radius, Path.Direction.CW);
             canvas.clipPath(clipPath);
-            canvas.drawColor(Color.BLACK);
+            canvas.drawColor(Color.argb(80, 0, 0, 0 ));
             super.onDraw(canvas);
         }
 }

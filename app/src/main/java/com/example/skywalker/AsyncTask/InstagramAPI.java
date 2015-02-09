@@ -1,4 +1,4 @@
-package com.example.skywalker;
+package com.example.skywalker.AsyncTask;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.skywalker.ChatHeadsClone.R;
 import com.example.skywalker.rounded_image.CircularImageView;
@@ -24,10 +25,19 @@ import java.net.URL;
 /**
  * Created by skywalker on 2/8/15.
  */
-public class InstagramService extends AsyncTask<String, String, Bitmap> {
+public class InstagramAPI extends AsyncTask<String, String, Bitmap> {
 
     private CircularImageView chatHead;
     private Context appContext;
+    private TextView chathead_title;
+
+    public TextView getChathead_title() {
+        return chathead_title;
+    }
+
+    public void setChathead_title(TextView chathead_title) {
+        this.chathead_title = chathead_title;
+    }
 
     public Context getAppContext() {
         return appContext;
@@ -48,7 +58,6 @@ public class InstagramService extends AsyncTask<String, String, Bitmap> {
     @Override
     protected Bitmap doInBackground(String... params) {
         String imgUrl = getImageUrl(params[0]);
-        Log.d("Image URL", imgUrl);
         Bitmap bp = BitmapFactory.decodeResource(appContext.getResources(), R.drawable.ic_launcher);
         if(imgUrl != ""){
             bp = getImage(imgUrl);
@@ -97,6 +106,9 @@ public class InstagramService extends AsyncTask<String, String, Bitmap> {
             JSONArray arr = obj.getJSONArray("data");
             if(arr.length()>0){
                 imgUrl = arr.getJSONObject(0).getJSONObject("images").getJSONObject("thumbnail").getString("url");
+                chathead_title.setText(arr.getJSONObject(0).getString("title"));
+            } else {
+                chathead_title.setText("No Image");
             }
         } catch (JSONException e) {
             e.printStackTrace();
