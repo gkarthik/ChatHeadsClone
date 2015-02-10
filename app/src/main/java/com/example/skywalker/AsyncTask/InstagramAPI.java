@@ -118,8 +118,8 @@ public class InstagramAPI extends AsyncTask<String, String, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        if(title.length()>20){
-            title = title.substring(0,17)+" ...";
+        if(title.length()>12){
+            title = title.substring(0,10)+"..";
         }
         chathead_title.setText(title);
         chatHead.setImageBitmap(bitmap);
