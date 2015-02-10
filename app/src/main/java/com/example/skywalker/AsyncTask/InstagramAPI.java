@@ -30,6 +30,7 @@ public class InstagramAPI extends AsyncTask<String, String, Bitmap> {
     private CircularImageView chatHead;
     private Context appContext;
     private TextView chathead_title;
+    private String title = "";
 
     public TextView getChathead_title() {
         return chathead_title;
@@ -104,11 +105,10 @@ public class InstagramAPI extends AsyncTask<String, String, Bitmap> {
             obj = new JSONObject(result);
 
             JSONArray arr = obj.getJSONArray("data");
+            title = "No Image";
             if(arr.length()>0){
                 imgUrl = arr.getJSONObject(0).getJSONObject("images").getJSONObject("thumbnail").getString("url");
-                chathead_title.setText(arr.getJSONObject(0).getString("title"));
-            } else {
-                chathead_title.setText("No Image");
+                title = arr.getJSONObject(0).getJSONObject("caption").getString("text");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -118,6 +118,10 @@ public class InstagramAPI extends AsyncTask<String, String, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
+        if(title.length()>20){
+            title = title.substring(0,17)+" ...";
+        }
+        chathead_title.setText(title);
         chatHead.setImageBitmap(bitmap);
     }
 }

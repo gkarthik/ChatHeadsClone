@@ -36,7 +36,7 @@ public class ChatHeadService extends Service {
 
     private WindowManager windowManager;
     private RelativeLayout chatHeadLayout;
-    final double edge = 200;
+    final double edge = 250;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -56,6 +56,7 @@ public class ChatHeadService extends Service {
 
         final CircularImageView dropView = new CircularImageView(this);
         dropView.setImageResource(R.drawable.ic_action_cancel);
+        dropView.setVisibility(View.INVISIBLE);
         WindowManager.LayoutParams p = new WindowManager.LayoutParams(
                 (int) edge,
                 (int) edge,
@@ -76,10 +77,8 @@ public class ChatHeadService extends Service {
         final TextView title = new TextView(this);
         title.setBackgroundColor(Color.BLUE);
         title.setTextColor(Color.WHITE);
+        title.setY(150);
         RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        titleParams.addRule(RelativeLayout.BELOW, chatHead.getId());
-        titleParams.addRule(RelativeLayout.ALIGN_BOTTOM, chatHead.getId());
-
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -90,6 +89,7 @@ public class ChatHeadService extends Service {
         params.gravity = Gravity.BOTTOM | Gravity.LEFT;
         params.x = 20;
         params.y = 100;
+        params.height = 200;
 
         chatHeadLayout.setOnTouchListener(new View.OnTouchListener() {
             private int initialX;
@@ -99,6 +99,9 @@ public class ChatHeadService extends Service {
             String chathead_title;
 
             @Override public boolean onTouch(View v, MotionEvent event) {
+                if(chathead_title==""){
+                    chathead_title = title.getText().toString();
+                }
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         initialX = params.x;
@@ -113,7 +116,8 @@ public class ChatHeadService extends Service {
                             windowManager.removeView(v);
                             windowManager.removeView(dropView);
                         } else {
-                            v.setBackgroundColor(Color.TRANSPARENT);
+                            title.setText(chathead_title);
+                            chathead_title = "";
                         }
                         return true;
                     case MotionEvent.ACTION_MOVE:
@@ -121,11 +125,9 @@ public class ChatHeadService extends Service {
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY - (int) (event.getRawY() - initialTouchY);
                         windowManager.updateViewLayout(v, params);
-                        chathead_title = (String) title.getText();
                         if(checkDrop(event.getRawX(), event.getRawY(), screenHeight, screenWidth)){
                             title.setText("Close App?");
                         } else {
-                            v.setBackgroundColor(Color.TRANSPARENT);
                             title.setText(chathead_title);
                         }
                         return true;

@@ -55,7 +55,6 @@ public class CustomLocationListener implements LocationListener{
         String url = "";
         url = "https://api.instagram.com/v1/media/search?lat="+String.valueOf(lat)+"&lng="+String.valueOf(lgt)+"&distance=5000&client_id="+client_id;
         Log.d("URL", url);
-        chatHead.setBackgroundColor(Color.GREEN);
         InstagramAPI iService = new InstagramAPI();
         iService.setChatHead(chatHead);
         iService.setChathead_title(chathead_title);
